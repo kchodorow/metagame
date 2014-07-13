@@ -2,6 +2,8 @@ package com.kchodorow.gamegame;
 
 import java.util.ArrayList;
 
+import com.kchodorow.gamegame.drawing.EditorActivity;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -49,6 +51,7 @@ public class AddBoardActivity extends Activity {
 					getImageFromGallery();
 					break;
 				case DRAW:
+					getImageFromDrawing();
 					break;
 				default:
 					throw new IllegalArgumentException("Nothing to click as pos " + position);
@@ -57,17 +60,22 @@ public class AddBoardActivity extends Activity {
         });
 	}
 
-    public void getImageFromCamera() {
+    private void getImageFromCamera() {
     	Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
     	startActivityForResult(intent, CAMERA);
     }
 
-    public void getImageFromGallery() {
+    private void getImageFromGallery() {
 		Intent intent = new Intent(
 				Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), GALLERY);
+    }
+    
+    private void getImageFromDrawing() {
+    	Intent drawBoard = new Intent(AddBoardActivity.this, EditorActivity.class);
+		startActivityForResult(drawBoard, DRAW);
     }
     
     public void onActivityResult(int requestCode, int resultCode, Intent data) {        

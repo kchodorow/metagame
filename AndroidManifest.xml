@@ -33,6 +33,10 @@
             android:name="com.kchodorow.gamegame.AddRandomActivity"
             android:label="Add random" >
         </activity>
+        <activity
+            android:name="com.kchodorow.gamegame.drawing.EditorActivity"
+            android:label="Draw" >
+        </activity>
     </application>
 
 </manifest>

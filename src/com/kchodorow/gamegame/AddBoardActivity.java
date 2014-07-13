@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,9 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 public class AddBoardActivity extends Activity {
 	
@@ -74,19 +70,20 @@ public class AddBoardActivity extends Activity {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), GALLERY);
     }
     
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	Log.e(LOG, "Got: "+data.getData());
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {        
         if (resultCode != RESULT_OK) {
+        	setResult(RESULT_CANCELED);
+            finish();
         	return;
         }
-        ImageView imageView = new ImageView(this);
+        
+        Intent retval = new Intent();
         switch (requestCode) {
         case CAMERA:
-        	imageView.setImageBitmap((Bitmap)data.getExtras().get("data"));
+        	retval = data;
         	break;
         case GALLERY:
         	Uri selectedImage = data.getData();
-        	Log.e(LOG, "selected image: "+selectedImage);
         	String filePathColumn[] = {MediaStore.Images.Media.DATA};
         	Cursor cursor = getContentResolver()
         			.query(selectedImage, filePathColumn, null, null, null);
@@ -95,19 +92,15 @@ public class AddBoardActivity extends Activity {
         	String filePath = cursor.getString(columnIndex);
         	cursor.close();
         	
-        	imageView.setImageBitmap(BitmapFactory.decodeFile(filePath));
+        	retval.putExtra("filename", filePath);
         	break;
         case DRAW:
         	break;
         default:
         	throw new IllegalArgumentException("Got request code " + requestCode);
         }
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100, 100);
-        
-        ((RelativeLayout)findViewById(R.id.add_board_layout)).addView(imageView, params);
 
-//        Intent retval = new Intent();
-//        setResult(RESULT_OK, retval);
-//        finish();
+        setResult(RESULT_OK, retval);
+        finish();
     }
 }

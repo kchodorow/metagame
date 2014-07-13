@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
@@ -17,6 +19,7 @@ import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -30,6 +33,11 @@ public class EditGameActivity extends Activity {
 	private final String LOG = "EditGameActivity";
 	private GameView game;
 	private RelativeLayout workArea;
+	
+	private final int BOARD = 0;
+	private final int TOKEN = 1;
+	private final int DECK = 2;
+	private final int RANDOM = 3;
 	
 	private enum ListItem {
 		BOARD("Add board"),
@@ -89,17 +97,17 @@ public class EditGameActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				switch (position) {
-				case 0:
+				case BOARD:
 					Intent makeBoard = new Intent(EditGameActivity.this, AddBoardActivity.class);
 					startActivityForResult(makeBoard, position);
 					break;
-				case 1:
+				case TOKEN:
 					break;
-				case 2:
+				case DECK:
 					break;
-				case 3:
+				case RANDOM:
 					Intent makeRandom = new Intent(EditGameActivity.this, AddRandomActivity.class);
-					startActivityForResult(makeRandom, position);
+					startActivityForResult(makeRandom, RANDOM);
 					break;
 				default:
 					throw new IllegalArgumentException("Got unexpected position: " + position);
@@ -116,38 +124,68 @@ public class EditGameActivity extends Activity {
     	if (resultCode != RESULT_OK) {
     		return;
     	}
-    	if (requestCode == 3) {
-    		Bundle bundle = data.getExtras();
-    		int min = bundle.getInt("min");
-    		int max = bundle.getInt("max");
-    		game.addRandomGenerator(new RandomGenerator(min, max));
-    		
-            final Button button = new Button(this);
-            button.setText("x");
-            button.setOnTouchListener(new OnTouchListener() {
-
-				@Override
-				public boolean onTouch(View view, MotionEvent motion) {
-					DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
-			    	view.startDrag(null, shadowBuilder, view, 0);
-			    	return true;
-				}
-            	
-            });
-            
-            
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100, 100);
-            params.leftMargin = 75;
-            params.topMargin = 500;
-    		workArea.addView(button, params);
+    	switch (requestCode) {
+    	case BOARD:
+    		addBoard(data);
+    		break;
+    	case RANDOM:
+    		addRandom(data);
+    		break;
+    	default:
+    		throw new IllegalArgumentException("Invalid request: " + requestCode);
     	}
     }
 
-    @Override
+    private void addBoard(Intent data) {
+    	ImageView imageView = new ImageView(this);
+    	Bitmap bitmap = null;
+    	if (data.hasExtra("filename")) {
+    		String bitmapFile = data.getExtras().get("filename").toString();
+    		bitmap = BitmapFactory.decodeFile(bitmapFile);
+    		
+    	} else if (data.hasExtra("data")) {
+    		bitmap = (Bitmap)data.getExtras().get("data");
+    	} else {
+    		throw new IllegalArgumentException("No bitmap found: " + data);
+    	}
+    	imageView.setImageBitmap(bitmap);
+    	RelativeLayout.LayoutParams params = 
+    			new RelativeLayout.LayoutParams(bitmap.getWidth(), bitmap.getHeight());
+        workArea.addView(imageView, params);
+    }
+    
+    private void addRandom(Intent data) {
+    	Bundle bundle = data.getExtras();
+		int min = bundle.getInt("min");
+		int max = bundle.getInt("max");
+		game.addRandomGenerator(new RandomGenerator(min, max));
+		
+        final Button button = new Button(this);
+        button.setText("x");
+        button.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View view, MotionEvent motion) {
+				DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+		    	view.startDrag(null, shadowBuilder, view, 0);
+		    	return true;
+			}
+        	
+        });
+        
+        
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100, 100);
+        params.leftMargin = 75;
+        params.topMargin = 500;
+		workArea.addView(button, params);
+	}
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.activity_edit_game, menu);
         return true;
     }
+    
     
 }

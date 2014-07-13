@@ -74,7 +74,6 @@ public class EditGameActivity extends Activity {
 					params.leftMargin = (int)event.getX();
 		            params.topMargin = (int)event.getY();
 		            droppable.setLayoutParams(params);
-					Log.e(LOG, "dropping: "+event);
 		            break;
 				}
 				return true;
@@ -137,7 +136,6 @@ public class EditGameActivity extends Activity {
     }
 
     private void addBoard(Intent data) {
-    	ImageView imageView = new ImageView(this);
     	Bitmap bitmap = null;
     	if (data.hasExtra("filename")) {
     		String bitmapFile = data.getExtras().get("filename").toString();
@@ -148,10 +146,8 @@ public class EditGameActivity extends Activity {
     	} else {
     		throw new IllegalArgumentException("No bitmap found: " + data);
     	}
-    	imageView.setImageBitmap(bitmap);
-    	RelativeLayout.LayoutParams params = 
-    			new RelativeLayout.LayoutParams(bitmap.getWidth(), bitmap.getHeight());
-        workArea.addView(imageView, params);
+    	TokenView tokenView = new TokenView(this, bitmap);
+        workArea.addView(tokenView, tokenView.getParams());
     }
     
     private void addRandom(Intent data) {

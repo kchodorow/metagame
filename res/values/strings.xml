@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">GameGame</string>
+    <string name="add_board_item">Add board</string>
+    <string name="add_token_item">Add token</string>
+    <string name="add_deck_item">Add deck</string>
+    <string name="add_random_item">Add random</string>
+    <string name="menu_settings">Settings</string>
+
+</resources>

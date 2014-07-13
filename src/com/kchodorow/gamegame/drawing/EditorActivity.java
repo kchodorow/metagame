@@ -16,6 +16,9 @@ public class EditorActivity extends Activity implements OnTouchListener {
 	private static final String TAG = "EditorActivity";
 	
 	private DrawView drawView;
+	private ImageButton black;
+	private ImageButton white;
+	private ImageButton red;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -24,7 +27,11 @@ public class EditorActivity extends Activity implements OnTouchListener {
         
         drawView = (DrawView)findViewById(R.id.draw_view);
         
-		ImageButton red = (ImageButton)findViewById(R.id.palette_red);
+		black = (ImageButton)findViewById(R.id.palette_black);
+		black.setOnTouchListener(this);
+		white = (ImageButton)findViewById(R.id.palette_white);
+		white.setOnTouchListener(this);
+		red = (ImageButton)findViewById(R.id.palette_red);
 		red.setOnTouchListener(this);
 	}
 	
@@ -32,8 +39,14 @@ public class EditorActivity extends Activity implements OnTouchListener {
     }
 	
 	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		drawView.setColor(Color.RED);
+	public boolean onTouch(View view, MotionEvent event) {
+		if (view == black) {
+			drawView.setColor(Color.BLACK);		
+		} else if (view == white) {
+			drawView.setColor(Color.WHITE);
+		} else if (view == red) {
+			drawView.setColor(Color.RED);
+		}
 		return true;
 	}
 }

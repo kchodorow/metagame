@@ -4,12 +4,27 @@
     android:layout_height="match_parent" >
 
     <ImageButton
-        android:id="@+id/palette_red"
+        android:id="@+id/palette_black"
         android:layout_alignParentTop="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/palette_color"
+        android:src="@drawable/palette_black"
+        android:contentDescription="@string/black" />
+    <ImageButton
+        android:id="@+id/palette_white"
+        android:layout_toRightOf="@id/palette_black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/palette_white"
+        android:contentDescription="@string/white" />
+    <ImageButton
+        android:id="@+id/palette_red"
+        android:layout_toRightOf="@id/palette_white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/palette_red"
         android:contentDescription="@string/red" />
+    
         
     <com.kchodorow.gamegame.drawing.DrawView
 	    android:id="@+id/draw_view"

@@ -16,7 +16,7 @@ public class DrawView extends View implements OnTouchListener {
 
 	private final String TAG = "DrawView";
 	
-	private final int STROKE_WIDTH = 5;
+	private final int STROKE_WIDTH = 10;
 	
 	ArrayList<Stroke> strokes = new ArrayList<Stroke>();
 	Paint currentPaint;

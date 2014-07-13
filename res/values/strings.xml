@@ -7,7 +7,12 @@
     <string name="add_deck_item">Add deck</string>
     <string name="add_random_item">Add random</string>
     <string name="menu_settings">Settings</string>
+    
+    <!-- Colors -->
+    <string name="black">Black</string>
     <string name="red">Red</string>
+    <string name="white">White</string>
+    
     <string name="save">Save</string>
 
 </resources>

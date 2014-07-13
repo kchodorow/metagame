@@ -55,11 +55,6 @@ public class EditGameActivity extends Activity {
         
         game = new GameView(this);
         
-        final ArrayList<String> edit_list = new ArrayList<String>();
-        for (ListItem item : ListItem.values()) {
-          edit_list.add(item.description());
-        }
-        
         workArea = (RelativeLayout)findViewById(R.id.work_area);
         workArea.setOnDragListener(new OnDragListener() {
 			@Override
@@ -79,18 +74,24 @@ public class EditGameActivity extends Activity {
         	
         });
         
+        final ArrayList<String> editList = new ArrayList<String>();
+        for (ListItem item : ListItem.values()) {
+          editList.add(item.description());
+        }
+        
         ListView listView = (ListView)findViewById(R.id.add_item_view);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-        		this, android.R.layout.simple_list_item_1, edit_list);
+        		this, android.R.layout.simple_list_item_1, editList);
         listView.setAdapter(adapter);
         
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Log.e(LOG, "Pos: "+position);
 				switch (position) {
 				case 0:
+					Intent makeBoard = new Intent(EditGameActivity.this, AddBoardActivity.class);
+					startActivityForResult(makeBoard, position);
 					break;
 				case 1:
 					break;
@@ -112,7 +113,10 @@ public class EditGameActivity extends Activity {
 	@Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
     	super.onActivityResult(requestCode, resultCode, data);
-    	if (resultCode == RESULT_OK) {
+    	if (resultCode != RESULT_OK) {
+    		return;
+    	}
+    	if (requestCode == 3) {
     		Bundle bundle = data.getExtras();
     		int min = bundle.getInt("min");
     		int max = bundle.getInt("max");

@@ -7,5 +7,7 @@
     <string name="add_deck_item">Add deck</string>
     <string name="add_random_item">Add random</string>
     <string name="menu_settings">Settings</string>
+    <string name="red">Red</string>
+    <string name="save">Save</string>
 
 </resources>

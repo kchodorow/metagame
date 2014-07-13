@@ -11,19 +11,27 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
+
 public class DrawView extends View implements OnTouchListener {
 
+	private final String TAG = "DrawView";
+	
 	private final int STROKE_WIDTH = 5;
 	
 	ArrayList<Stroke> strokes = new ArrayList<Stroke>();
-	Paint paint = new Paint();
+	Paint currentPaint;
 	
 	public DrawView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		
 		this.setOnTouchListener(this);
-		paint.setColor(Color.BLACK);
-		paint.setStrokeWidth(STROKE_WIDTH);
+		setColor(Color.BLACK);
+	}
+	
+	public void setColor(int color) {
+		currentPaint = new Paint();
+		currentPaint.setColor(color);
+		currentPaint.setStrokeWidth(STROKE_WIDTH);
 	}
 	
 	@Override
@@ -53,7 +61,7 @@ public class DrawView extends View implements OnTouchListener {
 	}
 	
 	private void brushDown(MotionEvent event) {
-		strokes.add(new Stroke(paint));
+		strokes.add(new Stroke(currentPaint));
 		brushMove(event);
 	}
 }

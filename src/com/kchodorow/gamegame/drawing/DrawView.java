@@ -13,7 +13,9 @@ import android.view.View.OnTouchListener;
 
 public class DrawView extends View implements OnTouchListener {
 
-	ArrayList<Point> points = new ArrayList<Point>();
+	private final int STROKE_WIDTH = 5;
+	
+	ArrayList<Stroke> strokes = new ArrayList<Stroke>();
 	Paint paint = new Paint();
 	
 	public DrawView(Context context, AttributeSet attrs) {
@@ -21,25 +23,65 @@ public class DrawView extends View implements OnTouchListener {
 		
 		this.setOnTouchListener(this);
 		paint.setColor(Color.BLACK);
+		paint.setStrokeWidth(STROKE_WIDTH);
 	}
 	
 	@Override
 	public void onDraw(Canvas canvas) {
-		for (Point point : points) {
-			canvas.drawCircle(point.x, point.y, 5, paint);
+		for (Stroke stroke : strokes) {
+			stroke.draw(canvas);
 		}
 	}
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		Point point = new Point();
-		point.x = event.getX();
-		point.y = event.getY();
-		points.add(point);
-		invalidate();
+		switch (event.getAction()) {
+		case MotionEvent.ACTION_DOWN:
+			brushDown(event);
+			break;
+		case MotionEvent.ACTION_MOVE:
+			brushMove(event);
+			break;
+		}
 		return true;
 	}
+	
+	private void brushMove(MotionEvent event) {
+		Stroke currentStroke = strokes.get(strokes.size() - 1);
+		currentStroke.add(event.getX(), event.getY());
+		invalidate();
+	}
+	
+	private void brushDown(MotionEvent event) {
+		strokes.add(new Stroke(paint));
+		brushMove(event);
+	}
+}
 
+class Stroke {
+	private ArrayList<Point> points = new ArrayList<Point>();
+	private Paint paint;
+	
+	Stroke(Paint paint) {
+		this.paint = paint;
+	}
+	
+	void add(float x, float y) {
+		Point point = new Point();
+		point.x = x;
+		point.y = y;
+		points.add(point);
+	}
+	
+	void draw(Canvas canvas) {
+		Point prevPoint = null;
+		for (Point point : points) {
+			if (prevPoint != null) {
+				canvas.drawLine(prevPoint.x, prevPoint.y, point.x, point.y, paint);
+			}
+			prevPoint = point;
+		}
+	}
 }
 
 class Point {
